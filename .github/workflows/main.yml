@@ -1,4 +1,4 @@
-name: Build Gym Ciencia APK
+name: Build APK Blindado
 
 on:
   push:
@@ -10,36 +10,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Baixar Código
+      # 1. Baixa seu código
+      - name: ⬇️ Checkout do Código
         uses: actions/checkout@v3
 
-      - name: 🐍 Instalar Python 3.11
+      # 2. Prepara o Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: ☕ Instalar Java 17 (Necessário para Android)
+      # 3. Prepara o Java (para Android)
+      - name: ☕ Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 📱 Instalar Flutter
+      # 4. Prepara o Flutter (Motor)
+      - name: 📱 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.x' # Versão estável compatível com Flet
+          flutter-version: '3.22.x'
 
-      - name: 📦 Instalar Dependências do Python
+      # 5. Instala o Flet (DIRETO, sem requirements.txt)
+      - name: 📦 Instalar Flet
         run: |
           pip install flet
-          pip install -r requirements.txt
+          flet --version
 
-      - name: 🏗️ Construir o APK
+      # 6. Constrói o APK
+      - name: 🏗️ Construir APK
         run: |
           flet build apk --verbose
 
-      - name: 📤 Upload do APK Pronto
+      # 7. Disponibiliza o Download
+      - name: 📤 Upload do Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gym-ciencia-tomate-apk
+          name: gym-ciencia-apk
           path: build/app/outputs/flutter-apk/app-release.apk
